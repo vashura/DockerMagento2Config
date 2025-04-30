@@ -1,0 +1,77 @@
+1.-ajustar el archivo Dockerfile para poder crear las imagenes para instanciar los contenedores para instalar magento
+2.-con las imagenes creadas crear los contenedores 
+
+Paso 1: Preparación del Entorno
+
+	1. Accede al contenedor web:
+		docker exec -it 8.2_dev_webserver bash #8.2_dev_webserver puede variar por la instalacion de php lo que es constante es dev_webserver
+
+	2. Crea el directorio para Magento:
+		bash
+		cd /var/www/html
+		mkdir magento
+		cd magento
+	3. salir del contenedor:
+		exit
+
+Paso 2: Creación de la Base de Datos
+
+	Desde tu terminal local (fuera del contenedor):
+
+		docker exec -it 8.2_dev_mysql-db mysql -uroot -ppassword -e 'CREATE DATABASE magento;'
+	
+	se puede presentar el error de que exista la base datos previamente creada desde la imagen
+
+		ERROR 1007 (HY000) at line 1: Can't create database 'magento'; database exists
+
+	en tal caso no hacer nada
+	*podemos acceder a la base de datos con phpmyadmin en el puerto 8081
+
+Paso 3: Instalación de Magento Community Edition
+
+	Dentro del contenedor (en /var/www/html/magento):
+	#para entrar en el contenedor
+	docker exec -it 8.2_dev_webserver bash 
+
+	#actualiza paquetes para evirtar errores de instalacion:
+	apt-get update && apt-get install -y libssl-dev
+	docker-php-ext-install ftp
+
+	docker-php-ext-install ftp && \
+	docker-php-ext-enable ftp && \
+	service apache2 restart
+
+
+	#para instalar magento
+	#limpiar la carpeta de otros files para que no nos marque error de instalacion
+	composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition .
+
+	Nota: Si te pide credenciales, usa:
+
+	Usuario: tu_public_key (de Magento Marketplace)
+	Contraseña: tu_private_key
+
+Paso 4: Instalación de Magento
+
+	Ejecuta este comando adaptado a tu configuración:
+
+	bash
+	php bin/magento setup:install \
+	--base-url=http://local.docker.com/ \
+	--db-host=mysql-db \
+	--db-name=magento \
+	--db-user=root \
+	--db-password=password \
+	--admin-firstname=Admin \
+	--admin-lastname=Admin \
+	--admin-email=admin@admin.com \
+	--admin-user=admin \
+	--admin-password=admin123 \
+	--language=en_US \
+	--currency=USD \
+	--timezone=America/Chicago \
+	--backend-frontname="admin" \
+	--use-rewrites=1 \
+	--search-engine=elasticsearch7 \
+	--elasticsearch-host=elasticsearch \
+	--elasticsearch-port=9200

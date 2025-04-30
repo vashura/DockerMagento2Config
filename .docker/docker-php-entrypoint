@@ -1,0 +1,8 @@
+#!/bin/bash
+set -e
+
+# Inicia el servicio cron
+service cron start
+
+# Ejecuta el comando original (Apache)
+exec "$@"

@@ -1,0 +1,55 @@
+Prerequisites : 
+-----------------------------------------------------------------------------
+1. Docker Must be Installed with Docker Compose
+	> https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-20-04
+	> https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-20-04
+
+2. .docker folder must have proper Permission
+	> sudo chmod -R 755 .docker/
+
+Installation : 
+------------------------------------------------------------------------------
+	> Create a folder anywhere like docker in your system.
+	> Extract All the Files In the Above Folder.
+	> Add this (127.0.0.1    localhost   local.docker.com) in your etc/host file, then save it.
+	> Run Command : bash docker-init
+	> Run Command : bash docker-build
+	> Run Command : bash docker-start
+	> Check for the running contianers by Command - bash docker-ps
+
+
+About : 
+------------------------------------------------------------------------------
+Installed Services : 
+	- webserver (apache with php)   | Port - 80:80 For HTTP, Port - 443 For HTTPS
+	- composer                      | N/A
+	- mariadb                       | Port - 3306:3306
+	- phpmyadmin                    | Post - 8081:80
+	- varnish                       | Port - 8082:80
+	- elasticsearch                 | Port - 9200:9200
+	- mailhog                       | Port - 8025 For UI, Port - 1025 For SMTP Server
+	- ngrok                         | Port - 4040
+
+	> .env File To declare Global Variables Like db user, password, db name.
+	> custom-php.ini File to declare php.ini variables.
+	> Root project path : src/
+
+
+Go Inside Docker-Container Bash : 
+-----------------------------------------------------
+bash docker-inside
+
+
+To generate Self-Signed SSL Certificates : 
+-----------------------------------------------------
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout server.key -out server.crt -subj "/C=US/ST=MyCountry/L=MyCity/O=MyOrganization/CN=localhost"
+
+
+To Get Public Url Of Ngrok Application
+-----------------------------------------------------
+http://localhost:4040/api/tunnels
+
+
+To View the Statistics of the Ngrok of the application
+-------------------------------------------------------
+http://localhost:4040/
