@@ -1,5 +1,5 @@
 # Establece versión PHP por defecto y usa multi-stage build
-ARG PHP_VERSION=8.2
+ARG PHP_VERSION=8.2 # <-- se pude cambiar la version del php para una instalacion personalizada
 FROM php:${PHP_VERSION}-apache AS builder
 
 # Argumentos obligatorios con valores por defecto
@@ -8,7 +8,7 @@ ARG APACHE_USER=jarvis
 ARG USER_ID=1000
 ARG APACHE_RUN_GROUP=${APACHE_USER}
 
-LABEL maintainer="Dev. Mohd Shahbaz mdshahbazsid@gmail.com"
+LABEL maintainer="Dev. Mohd Shahbaz mdshahbazsid@gmail.com, Valerio Lopez valerio.lopez @outlook.com"
 
 # Configuración de usuario y permisos
 RUN adduser --uid ${USER_ID} --gecos 'Apache User' --disabled-password "${APACHE_USER}" && \
