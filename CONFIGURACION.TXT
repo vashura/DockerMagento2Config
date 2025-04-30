@@ -1,16 +1,42 @@
-1.-ajustar el archivo Dockerfile para poder crear las imagenes para instanciar los contenedores para instalar magento
-2.-con las imagenes creadas crear los contenedores 
+PASOS: 
+	#Clonar y configurar el repositorio @@Repositorio original: https://github.com/mdshahbazsid/docker-webserver.git
+ 	git git@github.com:vashura/DockerMagento2Config.git 
+	cd docker-webserver
 
-Paso 1: Preparación del Entorno
+	# Dar permisos necesarios
+	sudo chmod -R 755 .docker/
+	chmod +x docker-*  # Dar permisos a los scripts
 
+	#Configuración importante
+
+	#Edita el archivo /etc/hosts:
+
+	sudo nano /etc/hosts
+
+	#Agrega esta línea:
+
+	127.0.0.1    local.docker.com
+
+	#contruye las imagenes
+	docker-compose build
+
+	#levanta los contenedores
+	docker-compose up -d
+
+Instalar Magento (pasos específicos para Mac)
+Preparación del Entorno
+
+	#8.2_dev_webserver puede variar por la instalacion de php lo que es constante es dev_webserver
 	1. Accede al contenedor web:
-		docker exec -it 8.2_dev_webserver bash #8.2_dev_webserver puede variar por la instalacion de php lo que es constante es dev_webserver
+		docker exec -it 8.2_dev_webserver bash 
 
 	2. Crea el directorio para Magento:
 		bash
 		cd /var/www/html
-		mkdir magento
+		#si no existe la carpeta, generarla! con el comando mkdir
+		mkdir magento 
 		cd magento
+
 	3. salir del contenedor:
 		exit
 
