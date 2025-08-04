@@ -101,3 +101,7 @@ Paso 4: Instalación de Magento
 	--search-engine=elasticsearch7 \
 	--elasticsearch-host=elasticsearch \
 	--elasticsearch-port=9200
+
+
+	construir el docker desde fuera de la carpeta donde se encuentra el docker file
+	docker build -f .docker/Dockerfile -t magesandbox .

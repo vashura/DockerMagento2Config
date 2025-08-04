@@ -1,0 +1,301 @@
+https://www.mgt-commerce.com/tutorial/install-magento-2-4-6-on-ubuntu-22-04/
+
+Requisitos del sistema de Magento 2.4.6
+
+Para garantizar una instalación fluida y un rendimiento óptimo de Magento 2.4.6, es fundamental cumplir con los siguientes requisitos del sistema . La comunidad de código abierto de Magento ha definido estos requisitos para una experiencia de comercio electrónico fluida:
+
+1. Sistema operativo
+
+Linux x86-64 (por ejemplo, Red Hat Enterprise Linux, CentOS, Ubuntu, Debian, etc.)
+
+macOS (para entornos de desarrollo locales)
+
+2. Servidor web
+
+Magento 2.4.6 es compatible con los siguientes servidores web:
+
+Apache 2.4 o posterior
+
+NGINX 1.18 o posterior
+
+3. Base de datos
+
+Elija entre estas bases de datos compatibles:
+
+MySQL 8.0 o posterior
+
+MariaDB 10.4 o posterior
+
+4. Versión de PHP
+
+Asegúrese de que su servidor ejecute PHP 8.1 o una versión posterior. Además, Magento 2.4.6 requiere las siguientes extensiones de PHP:
+ext-bcmath
+ext-ctype
+ext-curl
+ext-dom
+ext-gd
+ext-hash
+ext-iconv
+ext-intl
+ext-mbstring
+ext-openssl
+ext-pdo_mysql
+ext-simplexml
+ext-soap
+ext-xsl
+ext-zip
+ext-sockets
+ext-xml
+ext-xmlreader
+ext-xmlwriter
+lib-libxml (DOMDocument)
+
+5. SSL
+
+Asegúrese de que su configuración incluya un certificado de seguridad válido para transacciones seguras, ya que HTTPS es obligatorio.
+
+6. Requisitos adicionales
+
+Para facilitar la instalación y funcionalidad de Magento 2.4.6, se requieren las siguientes herramientas:
+
+Composer 2.2 o posterior: una herramienta de gestión de dependencias para PHP.
+
+Elasticsearch 7.9 o posterior: necesario para capacidades de búsqueda eficientes.
+
+Requisitos previos de Magento 2.4.6
+
+Para comenzar a utilizar Magento 2.4.6, asegúrese de cumplir dos requisitos previos clave:
+
+Requisitos del sistema : Cumplir con todos los requisitos del sistema Magento 2.4.6 como se especifica en la documentación oficial.
+
+Alojamiento administrado : invierta en un plan de alojamiento administrado de Magento para obtener una base confiable para su tienda en línea.
+
+Pasos para la instalación de Magento 2.4.6 en Ubuntu
+
+Paso 1: Actualizar el sistema operativo
+
+Actualiza tu sistema operativo Ubuntu 22.04 para mantenerlo actualizado. Esto garantiza que tu sistema cuente con las últimas versiones de paquetes.
+
+# apt update && sudo apt upgrade -y
+Paso 2: Instalar el servidor web Nginx
+
+Siga estos pasos para instalar y configurar el servidor web Nginx :
+
+Instale Nginx ejecutando el siguiente comando:
+# apt install nginx
+Una vez completada la instalación, inicie Nginx con este comando:
+# systemctl start nginx
+Asegúrese de que Nginx se inicie automáticamente al arrancar con el siguiente comando:
+# systemctl enable nginx
+Nginx ahora está instalado, ejecutándose y configurado para iniciarse en el arranque.
+
+Paso 3: Instalar PHP y extensiones PHP
+
+Asegúrese de tener la versión de PHP y las extensiones correctas para Magento 2.4.6:
+
+Instale PHP 8.1 con las extensiones necesarias utilizando el siguiente comando:
+# apt-get install php php-dev php-fpm php-bcmath php-intl php-soap php-zip php-curl php-mbstring php-mysql php-gd php-xml
+Verifique si PHP está instalado.
+php -v
+Debería ver un resultado similar a este:
+PHP 8.1.2-1ubuntu2.11 (cli) (built: Feb 22 2023 22:56:18) (NTS)
+Copyright (c) The PHP Group
+Zend Engine v4.1.2, Copyright (c) Zend Technologies
+    with Zend OPcache v8.1.2-1ubuntu2.11, Copyright (c), by Zend Technologies
+    
+Paso 4: Actualizar el archivo php.ini
+
+Personalice su configuración PHP para Magento 2.4.6 siguiendo estos pasos:
+
+Busque el archivo de configuración de PHP ejecutando:
+php --ini | grep "Loaded Configuration File"
+Obtendrás un resultado como:
+Loaded Configuration File:         /etc/php/8.1/cli/php.ini
+Abra el archivo php.ini para editarlo:
+# nano /etc/php/8.1/cli/php.ini
+Modifique las siguientes configuraciones en el archivo php.ini:
+Establecer file_uploadsen encendido
+Establecer allow_url_fopenen encendido
+Establecer short_open_tagen encendido
+Aumento memory_limita 512M
+Establecer upload_max_filesizeen 128M
+Aumentar max_execution_timea 3600
+Guarde los cambios en el archivo php.ini.
+
+Para aplicar los cambios de configuración, reinicie Nginx:
+
+# systemctl restart nginx
+Ahora, su configuración de PHP está optimizada para cumplir con los requisitos de Magento 2.4.6.
+
+Paso 5: Instalar MySQL 8 y crear la base de datos
+
+Configure MySQL 8 y cree una base de datos para Magento 2.4.6 siguiendo estos pasos:
+
+Instale MySQL con este comando:
+# apt install mysql-server
+Inicie el servidor de base de datos MySQL y habilítelo para que se inicie automáticamente al arrancar:
+# systemctl start mysql
+# systemctl enable mysql
+Después de instalar e iniciar MySQL, acceda al indicador de MySQL:
+#  mysql -u root -p
+Dentro del indicador de MySQL, ejecute los siguientes comandos para crear una base de datos, un usuario de base de datos y otorgarle todos los privilegios.
+Nota : Personalice 'magentodb', 'magentouser' y 'MyPassword' según sea necesario:
+
+mysql> CREATE DATABASE magentodb;
+mysql> CREATE USER 'magentouser'@'localhost' IDENTIFIED BY 'MyPassword';
+mysql> GRANT ALL ON magentodb.* TO 'magentouser'@'localhost';
+mysql> FLUSH PRIVILEGES;
+mysql> EXIT
+Paso 6: Instalación de Elasticsearch
+
+Configure Magento 2 Elasticsearch como motor de búsqueda de catálogo para Magento 2.4.6 con estos pasos:
+
+Importar la clave GPG de Elasticsearch :
+# wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo gpg --dearmor -o /usr/share/keyrings/elasticsearch-keyring.gpg
+Agregue el repositorio Elasticsearch :
+# echo "deb [signed-by=/usr/share/keyrings/elasticsearch-keyring.gpg] https://artifacts.elastic.co/packages/8.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-8.x.list
+Actualice el administrador de paquetes apt e instale Elasticsearch :
+# apt update && apt install elasticsearch
+Inicie y habilite el servicio Elasticsearch :
+# systemctl start elasticsearch
+# systemctl enable elasticsearch
+Abra el archivo elasticsearch.yml para editarlo:
+sudo nano  /etc/elasticsearch/elasticsearch.yml
+Reemplace la siguiente configuración con 'falso' para deshabilitar las funciones de seguridad de Magento :
+# Enable security features
+xpack.security.enabled: false
+Guarde los cambios en el archivo elasticsearch.yml.
+
+Reinicie el servicio Elasticsearch para aplicar la configuración:
+
+# systemctl restart elasticsearch.service
+Verifique que Elasticsearch se ejecute correctamente usando el comando curl:
+# curl -X GET "localhost:9200/"
+Si Elasticsearch funciona correctamente, recibirás un resultado como este:
+{
+  "name" : "ubuntu",
+  "cluster_name" : "elasticsearch",
+  "cluster_uuid" : "KPbFKCVLT9uu-RFxzxH_Bw",
+  "version" : {
+    "number" : "8.6.2",
+    "build_flavor" : "default",
+    "build_type" : "deb",
+    "build_hash" : "2d58d0f136141f03239816a4e360a8d17b6d8f29",
+    "build_date" : "2023-02-13T09:35:20.314882762Z",
+    "build_snapshot" : false,
+    "lucene_version" : "9.4.2",
+    "minimum_wire_compatibility_version" : "7.17.0",
+    "minimum_index_compatibility_version" : "7.0.0"
+  },
+  "tagline" : "You Know, for Search"
+}
+
+Paso 7: Instalar Composer
+
+Descargue Composer usando este comando:
+# curl -sS https://getcomposer.org/installer | php
+Mueva el archivo Composer a la /usr/local/binruta:
+# mv composer.phar  /usr/local/bin/composer
+Otorgar permiso de ejecución a Composer:
+# chmod +x   /usr/local/bin/composer
+Verifique la versión de Composer para confirmar la instalación:
+# composer --version
+Debería ver un resultado similar a este:
+Composer version 2.5.4 2023-02-15 13:10:06
+Paso 8: Instalar Magento 2.4.6
+
+Se recomienda instalar Magento mediante el Marketplace creando una clave de acceso.
+
+Genere claves de acceso navegando a: Mi perfil > Marketplace > Mis productos > Claves de acceso .
+
+**Descargar datos de Magento** 2.4.6 con el siguiente comando:
+
+# composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition=2.4.6 /var/www/magento2
+Cuando se le solicite, proporcione su clave pública como nombre de usuario y su clave privada como contraseña.
+
+Vaya al directorio de Magento :
+
+# cd /var/www/magento2
+Establezca los permisos adecuados para las carpetas de caché y contenido estático :
+find var generated vendor pub/static pub/media app/etc -type f -exec chmod g+w {} +
+Cambie la propiedad del directorio de Magento al usuario del servidor web y ajuste los permisos:
+# chown -R www-data:www-data /var/www/magento2
+# chmod -R 755 /var/www/magento2
+Instale Magento con el comando composer . Personalice los parámetros según su entorno:
+# bin/magento setup:install \
+--base-url=http://your-domain.com \
+--db-host=localhost \
+--db-name=magentodb \
+--db-user=magentouser \
+--db-password=MyPassword \
+--admin-firstname=Admin \
+--admin-lastname=User \
+--admin-email=admin@your-domain.com \
+--admin-user=admin \
+--admin-password=admin123 \
+--language=en_US \
+--currency=USD \
+--timezone=America/Chicago \
+--use-rewrites=1
+Recibirá el enlace de administrador para su sitio Magento después de la instalación exitosa.
+[SUCCESS]: Magento installation complete.
+[SUCCESS]: Magento Admin URI: /admin_o07lew
+Nothing to import.
+Paso 9: Configurar el servidor web Nginx para Magento 2.4.6
+
+Navegue al directorio de configuración de Nginx :
+cd /etc/nginx/conf.d
+Cree un archivo de configuración para su instalación de Magento:
+# nano /etc/nginx/conf.d/magento2.conf
+Agregue el siguiente contenido al archivo, personalizándolo según sea necesario (reemplácelo your-domain.comcon su dominio real):
+upstream fastcgi_backend {
+  server  unix:/run/php/php8.1-fpm.sock;
+}
+
+server {
+
+  listen 80;
+  server_name your-domain.com www.your-domain.com;
+  set $MAGE_ROOT /var/www/magento2;
+  include /var/www/magento2/nginx.conf.sample;
+}
+Guarde el archivo y salga del editor de texto.
+
+Reinicie el servidor web Nginx para aplicar los cambios de configuración:
+
+# systemctl restart nginx
+Paso 10: Acceda a su aplicación Magento 2.4.6
+
+Ahora que su instalación de Magento 2 está configurada, acceda a ella a través de su navegador web:
+
+Abra su navegador web preferido .
+En la barra de direcciones, escriba su dominio, por ejemplo,http://your-domain.com
+Preguntas frecuentes
+
+1. ¿Cuáles son los requisitos del sistema para instalar Magento 2.4.6 en Ubuntu 22.04?
+
+Magento 2.4.6 requiere un sistema operativo Linux x86-64, como Ubuntu 22.04 o Debian 11 , y es compatible con servidores web como Apache 2.4 o posterior y NGINX 1.18 o posterior. Además, asegúrese de usar PHP 8.1 o posterior con las extensiones especificadas, MySQL 8.0 o posterior y un certificado SSL válido para transacciones seguras.
+
+
+2. ¿Por qué es necesario Elasticsearch para la instalación de Magento 2.4.6?
+
+Elasticsearch, versión 7.9 o posterior, es crucial para una búsqueda eficiente en el catálogo de Magento 2.4.6. Mejora la funcionalidad de búsqueda, ofreciendo una experiencia fluida a los usuarios que navegan por su tienda online.
+
+
+3. ¿Cómo puedo personalizar la configuración de PHP para Magento 2.4.6?
+
+Para personalizar PHP para Magento 2.4.6, localice el archivo php.ini, generalmente en /etc/php/8.1/cli/php.ini. Ajuste parámetros como file_uploads, allow_url_fopen, memory_limit, etc. Tras la modificación, reinicie Nginx para aplicar los cambios.
+
+
+4. ¿Cuál es la importancia de Composer en la instalación de Magento 2.4.6?
+
+Composer, versión 2.2 o posterior, es una herramienta de gestión de dependencias para PHP. Desempeña un papel crucial en la descarga y gestión de componentes de Magento 2.4.6, garantizando un proceso de instalación optimizado.
+
+
+5. ¿Cómo accedo a mi aplicación Magento 2.4.6 después de la instalación?
+
+Una vez instalada, acceda a su aplicación Magento 2.4.6 abriendo su navegador web preferido e introduciendo su dominio, como http://your-domain.com, en la barra de direcciones. Esto le llevará al sitio de Magento configurado.
+
+Resumen
+
+Instalar Magento 2.4.6 en Ubuntu es un proceso sencillo y paso a paso. Permite aprovechar las nuevas funciones y mejoras de Magento 2.4.6, todo dentro del marco seguro del sistema operativo Ubuntu. Este tutorial explica los pasos para instalar Magento 2.4.6 en Ubuntu 22.04. También describe los requisitos del sistema, la configuración del servidor web Nginx, la configuración de PHP y la integración con Elasticsearch.
